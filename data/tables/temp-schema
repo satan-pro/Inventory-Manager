@@ -1,0 +1,13 @@
+orders(order_id, products, date, status(confirmed, cancelled, dispatched))
+purchase(purchase_id, product_id(multivalued attr), date)
+products(product_id, name, cost_price, sell_price, tag, stock_quantity, supplier_id)
+product_orders(quantity, dispatcher, buyer, seller)
+delivery(delivery_id, agent, order_id, date, status)
+
+customer(customer_id, name, order_history(multivalued attr))
+admin(admin_id)
+supplier(supplier_id, )
+
+sales(year, month, income, expenditure, profits, taxes, total revenue)
+income(order_id, total_income, total_cost_price)
+expenditure(purchase_id, total_expense)
