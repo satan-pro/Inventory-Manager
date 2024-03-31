@@ -1,7 +1,19 @@
-import Dashboard from "./pages/Dashboard";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Orders from "./pages/Orders";
+import Products from "./pages/Products";
+import Root from "./pages/Root";
 
-export default function App(){
-  return(
-    <Dashboard />
-  );
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Root />,
+    children: [
+      { path: "/orders", element: <Orders /> },
+      { path: "/products", element: <Products /> },
+    ],
+  },
+]);
+
+export default function App() {
+  return <RouterProvider router={router} />;
 }
