@@ -1,13 +1,71 @@
-orders(order_id, products, date, status(confirmed, cancelled, dispatched))
-purchase(purchase_id, product_id(multivalued attr), date)
-products(product_id, name, cost_price, sell_price, tag, stock_quantity, supplier_id)
-product_orders(quantity, dispatcher, buyer, seller)
-delivery(delivery_id, agent, order_id, date, status)
+CREATE DATABASE IMS;
+USE IMS;
+CREATE TABLE products(
+prod_id INT PRIMARY KEY,
+prod_name VARCHAR(50),
+brand VARCHAR(50),
+cost_price NUMERIC(6) NOT NULL,
+sell_price NUMERIC(6) NOT NULL,
+tag VARCHAR(30),
+stock_qty INT 
+);
 
-customer(customer_id, name, order_history(multivalued attr))
-admin(admin_id)
-supplier(supplier_id, )
+CREATE TABLE orders(
+order_id INT PRIMARY KEY,
+order_date DATE,
+qty NUMERIC(3) NOT NULL,
+order_status ENUM('Confirmed','Cancelled','InTransit'),
+prod_id INT,
+FOREIGN KEY(prod_id) REFERENCES products(prod_id)
+);
 
-sales(year, month, income, expenditure, profits, taxes, total revenue)
-income(order_id, total_income, total_cost_price)
-expenditure(purchase_id, total_expense)
+CREATE TABLE delivery(
+del_id INT PRIMARY KEY,
+agent VARCHAR(20),
+del_status ENUM('PACKAGED','SHIPPED','OUTFORDELIVERY'),
+order_id INT,
+FOREIGN KEY(order_id) REFERENCES orders(order_id)
+);
+
+/* NEW SCHEMA */ 
+
+create table delivery(
+    delivery_id varchar(5) primary key,
+    agent varchar(50),
+    delivery_status varchar(20)
+);
+
+create table orders(
+    oid varchar(5) primary key,
+    date datetime,
+    customer_id varchar(5),
+    delivery_id varchar(5),
+    foreign key(customer_id) references customer(customer_id),
+    foreign key(delivery_id) references delivery(delivery_id)
+);
+
+create table customers(
+    customer_id varchar(5) primary key,
+    customer_name varchar(50)
+);
+
+create table products(
+    product_id varchar(5) primary key,
+    product_name varchar(100),
+    category varchar(20),
+    quantity int,
+    price numeric(10,2),
+    product_img varchar(100)
+);
+
+create table supplier(
+    supplier_id varchar(5) primary key,
+    supplier_name varchar(100),
+    supplier_img varchar(100)
+)
+
+create table invoice(
+    order id 
+    product id
+    sell price
+)
