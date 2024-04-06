@@ -239,7 +239,7 @@ function Table(props) {
           <th>Order ID</th>
           <th>Date</th>
           <th>Customer</th>
-          <th>Sales Channel</th>
+          <th>Delivery Agent</th>
           <th>Status</th>
         </thead>
         {getData.map((item, index) => (

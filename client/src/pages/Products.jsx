@@ -14,8 +14,9 @@ import smartwatch from "../assets/smartwatch.png";
 import ps5 from "../assets/ps5.png";
 import lamp from "../assets/lamp.png";
 import { PieChart } from "@mui/x-charts";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "animate.css";
+import axios from "axios";
 
 const products = [
   {
@@ -62,6 +63,11 @@ const products = [
   },
 ];
 
+function refreshPage()
+{
+  window.location.reload();
+}
+
 function Heading(props) {
   return (
     <div className="w-full p-5 pb-[20px] flex items-center justify-between">
@@ -99,35 +105,69 @@ function AddProduct(props) {
           onClick={props.onClose}
         />
       </div>
-      <form action="http://localhost:3000/products" method="POST" encType="multipart/form-data">
+      <form action="http://localhost:3000/products" method="POST" encType="multipart/form-data" className="flex flex-col">
         <h1 className="text-xl">Product Id</h1> 
-        <input type="text" name="pid" className="border-2 border-text-gray-400 m-[10px] mb-[20px] w-[75%] rounded-lg h-[50px] p-5" />
+        <input type="text" name="pid" className="border-2 border-text-gray-400 m-[10px] w-[75%] rounded-lg h-[50px] p-5" />
         <h1 className="text-xl">Product Name</h1>
-        <input type="text" name="pname" className="border-2 border-text-gray-400 m-[10px] mb-[20px] w-[75%] rounded-lg h-[50px] p-5" />
+        <input type="text" name="pname" className="border-2 border-text-gray-400 m-[10px] w-[75%] rounded-lg h-[50px] p-5" />
         <h1 className="text-xl">Brand</h1>
-        <input type="text" name="brand" className="border-2 border-text-gray-400 m-[10px] mb-[20px] w-[75%] rounded-lg h-[50px] p-5" />
+        <input type="text" name="brand" className="border-2 border-text-gray-400 m-[10px] w-[75%] rounded-lg h-[50px] p-5" />
         <h1 className="text-xl">Category</h1>
-        <input type="text" name="category" className="border-2 border-text-gray-400 m-[10px] mb-[20px] w-[75%] rounded-lg h-[50px] p-5" />
+        <input type="text" name="category" className="border-2 border-text-gray-400 m-[10px] w-[75%] rounded-lg h-[50px] p-5" />
+        <h1 className="text-xl">Supplier Id</h1>
+        <input type="text" name="supplier_id" className="border-2 border-text-gray-400 m-[10px] w-[75%] rounded-lg h-[50px] p-5" />
         <h1 className="text-xl">Price</h1>
-        <input type="number" name="price" className="border-2 border-text-gray-400 m-[10px] mb-[20px] w-[50%] rounded-lg h-[50px] p-5" />
+        <input type="number" name="price" className="border-2 border-text-gray-400 m-[10px] w-[50%] rounded-lg h-[50px] p-5" />
         <h1 className="text-xl">Quantity</h1>
-        <input type="number" name="quantity" className="border-2 border-text-gray-400 m-[10px] mb-[20px] w-[50%] rounded-lg h-[50px] p-5" />
+        <input type="number" name="quantity" className="border-2 border-text-gray-400 m-[10px] w-[50%] rounded-lg h-[50px] p-5" />
+        <h1 className="text-xl">Add image</h1>
         <input
           type="file"
           accept="image/jpg, image/png"
-          className="border-2 m-[10px] w-[50%]"
+          className="border-2 m-[10px] w-[50%] mb-[20px]"
           name="image"
         />
-        <button type="submit" name="submit" value="submit">
+        <button type="submit" name="submit" value="submit" className="w-fit h-[50px] p-5 bg-[#5B83D7] rounded-lg text-slate-100 font-medium flex items-center">
           Save Changes
         </button>
       </form>
-      <button onClick={props.onClose}>Close</button>
     </div>
   );
 }
 
 function ProductModal(props) {
+
+  const [delProd, setDelProd] = useState(false);
+
+  const handleSubmit = (event) =>{
+    event.preventDefault();
+
+    const formData = new FormData(event.target);
+    const formObject = Object.fromEntries(formData.entries());
+
+    axios.post(`http://localhost:3000/productUpdate/${props.obj["PRODUCT_ID"]}`,{
+      prodData:formObject
+    }).then((response)=>{
+      console.log(response);
+      props.onClose();
+      refreshPage();
+    }).catch((err)=>{
+      console.error(err);
+    });
+  }
+
+  if(delProd)
+  {
+    axios.post(`http://localhost:3000/productDelete/${props.obj["PRODUCT_ID"]}`)
+    .then((response)=>{
+      console.log(response);
+      props.onClose();
+      refreshPage();
+    }).catch(err=>{
+      console.error(err);
+    });
+  }
+
   return (
     <aside
       className="w-[25%] h-screen z-10 flex flex-col p-10 pt-[50px] fixed top-0 right-0 bg-[#FFFFFF] animate__animated animate__slideInRight"
@@ -146,54 +186,57 @@ function ProductModal(props) {
           Edit <EditOutlined />
         </h1>
         <img
-          src={props.obj.img}
+          src={props.obj["PRODUCT_IMG"]}
           className="w-[50%] h-[50%] rounded-xl mx-auto"
         />
       </div>
+      <form  onSubmit={handleSubmit}>
       <div className="mb-[10px]">
         <h1 className="text-sm font-light mb-[5px]">Product Name</h1>
         <input
           type="text"
           className="text-xl font-medium bg-transparent p-[5px] border-2 rounded-lg"
-          defaultValue={props.obj.name}
-          disabled
+          name="pname"
+          defaultValue={props.obj["PRODUCT_NAME"]}
         />
       </div>
       <h1 className="text-sm font-light mb-[5px]">Brand</h1>
       <input
         type="text"
         className="max-w-[50%] text-xl font-medium bg-transparent p-[5px] border-2 rounded-lg mb-[10px]"
-        defaultValue={props.obj.brand}
-        disabled
+        name="brand"
+        defaultValue={props.obj["BRAND"]}
       />
       <div className="flex flex-row justify-between mb-[20px]">
         <div className="flex flex-col">
-          <h1 className="text-sm font-light mb-[5px]">Cost Price</h1>
+          <h1 className="text-sm font-light mb-[5px]">Price (Rs.)</h1>
           <input
             type="number"
             className="w-[150px] text-xl font-medium bg-transparent p-[5px] border-2 rounded-lg mb-[10px]"
-            defaultValue={props.obj.price}
-            disabled
+            name="price"
+            defaultValue={props.obj["COST_PRICE"]}
           />
         </div>
         <div className="flex flex-col">
-          <h1 className="text-sm font-light mb-[5px]">Sell Price</h1>
+          <h1 className="text-sm font-light mb-[5px]">Quantity</h1>
           <input
             type="number"
             className="w-[150px] text-xl font-medium bg-transparent p-[5px] border-2 rounded-lg mb-[10px]"
-            defaultValue={props.obj.price}
-            disabled
+            name="quantity"
+            defaultValue={props.obj["QUANTITY"]}
           />
         </div>
       </div>
       <div className="flex flex-row w-full justify-around">
-        <button className="w-fit h-[50px] p-5 bg-[#5B83D7] rounded-lg text-slate-100 font-medium flex items-center">
+        <button type="submit" className="w-fit h-[50px] p-5 bg-[#5B83D7] rounded-lg text-slate-100 font-medium flex items-center" name="submit" value="submit">
           Save Changes
         </button>
-        <button className="w-fit h-[50px] p-5 rounded-lg border-2 border-[#E60023] text-[#E60023] font-medium flex items-center">
+
+        <button className="w-fit h-[50px] p-5 rounded-lg border-2 border-[#E60023] text-[#E60023] font-medium flex items-center" name="delete" value={delProd} onClick={()=>setDelProd(true)}>
           Delete Item
         </button>
       </div>
+      </form>
     </aside>
   );
 }
@@ -208,7 +251,7 @@ function ProductCard(props) {
       <h1 className="text-2xl font-semibold my-[5px]">{props.name}</h1>
       <h1 className="font-light mb-[5px]">{props.brand}</h1>
       <div className="flex items-center justify-between">
-        <h1 className="font-semibold">{props.price}</h1>
+        <h1 className="font-semibold">Rs. {props.price}</h1>
         <h1 className="text-blue-400">{props.stock} left</h1>
       </div>
     </div>
@@ -273,7 +316,7 @@ function Stats(props) {
           id="chart-select"
           defaultValue="Category"
         >
-          <option value="Category" selected>
+          <option value="Category">
             Category
           </option>
           <option value="Top-Selling">Top Selling</option>
@@ -325,6 +368,18 @@ function Body() {
   const [modalKey, setModalKey] = useState(0);
   const [addProd, setAddProd] = useState(false);
 
+  const [productsData, setProductsData] = useState([]);
+
+  const fetchProducts = async ()=>{
+    axios.get("http://localhost:3000/products").then((response)=>{
+      setProductsData(response.data);
+    })
+  }
+
+  useEffect(()=>{
+   fetchProducts();
+  }, []);
+
   function modalControl(key) {
     setModalKey(key);
     setModal(true);
@@ -335,16 +390,16 @@ function Body() {
       <div className="w-full grow-1">
         <Heading addProdHandle={() => setAddProd(true)} />
         <div className="flex flex-wrap h-screen overflow-scroll">
-          {products.map((item, index) => {
+          {productsData.map((item, index) => {
             return (
               <ProductCard
                 key={index}
                 id={index}
-                img={item.img}
-                name={item.name}
-                brand={item.brand}
-                price={item.price}
-                stock={item.stock}
+                img={item["PRODUCT_IMG"]}
+                name={item["PRODUCT_NAME"]}
+                brand={item["BRAND"]}
+                price={item["COST_PRICE"]}
+                stock={item["QUANTITY"]}
                 clickEvent={(key) => modalControl(key)}
               />
             );
@@ -357,7 +412,7 @@ function Body() {
           close={modal}
           onClose={() => setModal(false)}
           key={modalKey}
-          obj={products[modalKey]}
+          obj={productsData[modalKey]}
         />
       )}
       <AddProduct open={addProd} onClose={() => setAddProd(false)} />
