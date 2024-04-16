@@ -9,7 +9,7 @@ import "animate.css";
 import laptop from "../assets/laptop.png";
 import shoe from "../assets/shoe.png";
 import smartwatch from "../assets/smartwatch.png";
-import { Steps } from 'antd';
+import { Steps } from "antd";
 import "animate.css";
 
 function Heading() {
@@ -53,6 +53,7 @@ function SearchSpace() {
           <option value="Shopify">Shopify</option>
           <option value="EBay">EBay</option>
           <option value="Etsy">Etsy</option>
+          <option value="None">None</option>
         </select>
 
         <select
@@ -68,91 +69,126 @@ function SearchSpace() {
           <option value="Shipped">Shipped</option>
           <option value="Delivered">Delivered</option>
           <option value="Cancelled">Cancelled</option>
+          <option value="None">None</option>
         </select>
       </div>
     </div>
   );
 }
 
-function PreviewDetails(props) {}
-
 function OrderPreview(props) {
+  const [previewData, setPreviewData] = useState([]);
+  const [deliveryStatus, setDeliveryStatus] = useState(0);
+
+  useEffect(() => {
+    axios.get(`http://localhost:3000/orders/${props.data}`).then((response) => {
+      setPreviewData(response.data);
+    });
+    if (previewData["deliveryStatus"] == "Packed") setDeliveryStatus(1);
+    else if (previewData["deliveryStatus"] == "Shipped") setDeliveryStatus(2);
+    else if (previewData["deliveryStatus"] == "Delivered") setDeliveryStatus(3);
+    else setDeliveryStatus(0);
+  },[previewData]);
 
   return (
-    <div className="w-[30%] h-screen p-[40px] flex flex-col fixed top-0 right-0 bg-[#FFFFFF] overflow-scroll animate__animated animate__slideInRight" style={{display: props.openState ? "block":"none"}}>
-      <div className="flex flex-row justify-between items-center text-4xl mb-[20px]">
-        <h1 className="">Order Details</h1>
-        <CloseRounded className="cursor-pointer" fontSize="large" onClick={props.handleClick} />
-      </div>
-      <div className="flex flex-col mb-[10px]">
-        <div className="flex flex-row gap-5 items-center pl-5 mb-[10px]">
-          <h1 className="text-2xl">Order No</h1>
-          <h1 className="text-xl text-blue-400">1001</h1>
-        </div>
-        <div className="flex flex-row gap-5 items-center pl-5 mb-[10px]">
-          <h1 className="text-2xl">Total Price</h1>
-          <h1 className="text-xl">1500</h1>
-        </div>
-        <div className="flex flex-row gap-5 items-center pl-5 mb-[10px]">
-          <h1 className="text-2xl">Order Date</h1>
-          <h1 className="text-xl">2024-03-01</h1>
-        </div>
-      </div>
-      <div className="order-product-preview w-[90%] h-[50%] mx-auto mb-[30px] rounded-xl p-5 bg-[#F4F6FA] overflow-scroll">
-        <div className="flex flex-row gap-[30px] mb-[30px]">
-          <img src={laptop} className="size-[30%] rounded-lg" />
-          <div className="flex flex-col">
-            <h1 className="text-xl font-medium">Laptop-GTX 1650</h1>
-            <h1 className="text-lg font-light">DELL</h1>
-            <h1 className="text-lg">Items : 3</h1>
-            <h1 className="text-md">Price : 1000</h1>
+    <div>
+      {previewData ? (
+        <div
+          className="w-[30%] h-screen p-[40px] flex flex-col fixed top-0 right-0 bg-[#FFFFFF] overflow-scroll animate__animated animate__slideInRight"
+          style={{ display: props.openState ? "block" : "none" }}
+        >
+          <div className="flex flex-row justify-between items-center text-4xl mb-[20px]">
+            <h1 className="">Order Details</h1>
+            <CloseRounded
+              className="cursor-pointer"
+              fontSize="large"
+              onClick={props.handleClick}
+            />
           </div>
-        </div>
-        <div className="flex flex-row gap-[30px] mb-[30px]">
-          <img src={smartwatch} className="size-[30%] rounded-lg" />
-          <div className="flex flex-col">
-            <h1 className="text-xl font-medium">Laptop-GTX 1650</h1>
-            <h1 className="text-lg font-light">DELL</h1>
-            <h1 className="text-lg">Items : 3</h1>
-            <h1 className="text-md">Price : 1000</h1>
+          <div className="flex flex-col mb-[10px]">
+            <div className="flex flex-row gap-5 items-center pl-5 mb-[10px]">
+              <h1 className="text-2xl">Order No</h1>
+              <h1 className="text-xl text-blue-400">
+                {previewData["orderId"]}
+              </h1>
+            </div>
+            <div className="flex flex-row gap-5 items-center pl-5 mb-[10px]">
+              <h1 className="text-2xl">Total Price</h1>
+              <h1 className="text-xl">{previewData["totalPrice"]}</h1>
+            </div>
+            <div className="flex flex-row gap-5 items-center pl-5 mb-[10px]">
+              <h1 className="text-2xl">Order Date</h1>
+              <h1 className="text-xl">
+                {previewData?.orderDate
+                  ? previewData["orderDate"].substring(0, 10)
+                  : ""}
+              </h1>
+            </div>
           </div>
-        </div>
-        <div className="flex flex-row gap-[30px] mb-[30px]">
-          <img src={shoe} className="size-[30%] rounded-lg" />
-          <div className="flex flex-col">
-            <h1 className="text-xl font-medium">Laptop-GTX 1650</h1>
-            <h1 className="text-lg font-light">DELL</h1>
-            <h1 className="text-lg">Items : 3</h1>
-            <h1 className="text-md">Price : 1000</h1>
+          <div className="order-product-preview w-[90%] h-[50%] mx-auto mb-[30px] rounded-xl p-5 bg-[#F4F6FA] overflow-scroll">
+            {previewData?.detailedOrders ? (
+              previewData["detailedOrders"].map((product, index) => {
+                return (
+                  <div
+                    className="flex flex-row gap-[30px] mb-[30px]"
+                    key={index}
+                  >
+                    <img
+                      src={product["PRODUCT_IMG"]}
+                      className="size-[30%] rounded-lg"
+                    />
+                    <div className="flex flex-col">
+                      <h1 className="text-xl font-medium">
+                        {product["PRODUCT_NAME"]}
+                      </h1>
+                      <h1 className="text-lg font-light">{product["BRAND"]}</h1>
+                      <h1 className="text-lg">
+                        Items : {product["PRODUCT_QUANTITY"]}
+                      </h1>
+                      <h1 className="text-md">
+                        Price : {product["SELL_PRICE"]}
+                      </h1>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div></div>
+            )}
           </div>
+          <Steps
+            className="px-[40px] text-[#b5e48c]"
+            direction="vertical"
+            current={deliveryStatus}
+            items={[
+              {
+                title: "Confirmed",
+              },
+              {
+                title: "Packed",
+              },
+              {
+                title: "Shipped",
+              },
+              {
+                title: "Delivered",
+              },
+            ]}
+          />
         </div>
-      </div>
-      <Steps
-      className="px-[40px] text-[#b5e48c]"
-        direction="vertical"
-        current={1}
-        items={[
-          {
-            title:'Packed'
-          },
-          {
-            title:'Shipped'
-          },
-          {
-            title:'Delivered'
-          },
-        ]}
-        />
+      ) : (
+        <div> Loading </div>
+      )}
     </div>
   );
 }
 
 function Table(props) {
-  const [getData, setGetData] = useState([]);
+  const [orders, setOrders] = useState([]);
 
   useEffect(() => {
     axios.get("http://localhost:3000/orders").then((response) => {
-      setGetData(response.data.tableData);
+      setOrders(response.data.orders);
     });
   }, []);
 
@@ -180,19 +216,14 @@ function Table(props) {
     });
   }
 
-  useEffect(() => {
-    axios
-      .get("http://localhost:3000/products")
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
-
   function DropdownRow(props) {
-    console.log(props.data);
+    const [detailedOrder, setDetailedOrder] = useState([]);
+
+    useEffect(() => {
+      axios.get(`http://localhost:3000/orders/${props.id}`).then((response) => {
+        setDetailedOrder(response.data["detailedOrders"]);
+      });
+    }, []);
 
     return (
       <div
@@ -204,18 +235,16 @@ function Table(props) {
             <th>Product Name</th>
             <th>Items</th>
             <th>Price</th>
-            <th>Vendor</th>
-            <th>Delivery Agent</th>
+            <th>Supplier</th>
           </thead>
           <tbody>
-            {props.data.map((product, index) => {
+            {detailedOrder && detailedOrder.map((product, index) => {
               return (
                 <tr className="p-[20px] h-[50px] text-left" key={index}>
-                  <td>{product.product_name}</td>
-                  <td>{product.items}</td>
-                  <td>{product.price}</td>
-                  <td>{product.vendor}</td>
-                  <td>{product.delivery_agent}</td>
+                  <td>{product["PRODUCT_NAME"]}</td>
+                  <td>{product["PRODUCT_QUANTITY"]}</td>
+                  <td>{product["SELL_PRICE"]}</td>
+                  <td>{product["SUPPLIER_NAME"]}</td>
                 </tr>
               );
             })}
@@ -226,7 +255,7 @@ function Table(props) {
   }
 
   return (
-    <div className="w-[95%] h-screen flex flex-col p-[30px] mx-auto rounded-xl bg-[#FFFFFF] overflow-scroll">
+    <div className="w-[95%] h-fit flex flex-col p-[30px] mx-auto rounded-xl bg-[#FFFFFF] overflow-scroll">
       <hr className="border-[1px] rounded-md border-gray-400"></hr>
       <table className="table-auto">
         <thead
@@ -242,14 +271,14 @@ function Table(props) {
           <th>Delivery Agent</th>
           <th>Status</th>
         </thead>
-        {getData.map((item, index) => (
+        {orders.map((item, index) => (
           <tbody className="text-xl" key={index}>
             <tr
               key={index}
               className="text-left min-h-5 border-b-2"
               style={{
                 height: "70px",
-                backgroundColor: selectedCheckboxes.includes(item.order_id)
+                backgroundColor: selectedCheckboxes.includes(item["ORDER_ID"])
                   ? "#a2d2ff"
                   : "#FFFFFF",
               }}
@@ -257,19 +286,26 @@ function Table(props) {
               <td>
                 <input
                   type="checkbox"
-                  onChange={() => toggleCheckbox(item.order_id)}
+                  onChange={() => toggleCheckbox(item["ORDER_ID"])}
                   className="h-[20px] w-[20px] cursor-pointer"
                 />
               </td>
-              <td className="text-blue-400 cursor-pointer" onClick={props.previewClick}>{item.order_id}</td>
-              <td>{item.date}</td>
-              <td>{item.customer}</td>
-              <td>{item.sales_channel}</td>
-              <td>{item.items_status}</td>
+              <td
+                className="text-blue-400 cursor-pointer"
+                onClick={() => {
+                  props.previewClick(item["ORDER_ID"]);
+                }}
+              >
+                {item["ORDER_ID"]}
+              </td>
+              <td>{item["ORDER_DATE"].substring(0, 10)}</td>
+              <td>{item["CUSTOMER_NAME"]}</td>
+              <td>{item["DELIVERY_AGENT"]}</td>
+              <td>{item["STATUS"]}</td>
               <td>
                 <div
                   className="bg-gray-400 w-[20px] h-[20px] flex items-center justify-center rounded-[50%] cursor-pointer"
-                  onClick={() => toggleDropdownRow(item.order_id)}
+                  onClick={() => toggleDropdownRow(item["ORDER_ID"])}
                 >
                   <KeyboardArrowDownRounded />
                 </div>
@@ -277,7 +313,7 @@ function Table(props) {
             </tr>
             <tr>
               <td colSpan="7" className="w-full">
-                <DropdownRow id={item.order_id} data={item.products} />
+                <DropdownRow id={item["ORDER_ID"]} />
               </td>
             </tr>
           </tbody>
@@ -288,17 +324,25 @@ function Table(props) {
 }
 
 function Body() {
-  
   const [preview, setPreview] = useState(false);
-
+  const [previewData, setPreviewData] = useState(null);
   return (
     <div className="w-screen h-full p-5 bg-[#F4F6FA] overflow-scroll">
       <div className="rounded-lg">
         <Heading />
         <SearchSpace />
-        <Table previewClick={()=>setPreview(true)} />
+        <Table
+          previewClick={(orderId) => {
+            setPreview(true);
+            setPreviewData(orderId);
+          }}
+        />
       </div>
-      <OrderPreview openState={preview} handleClick={()=>setPreview(false)} />
+      <OrderPreview
+        openState={preview}
+        handleClick={() => setPreview(false)}
+        data={previewData}
+      />
     </div>
   );
 }

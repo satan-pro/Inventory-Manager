@@ -1,5 +1,5 @@
 import { Add, EditOutlined, SearchRounded } from "@mui/icons-material";
-import { AddSharp, CloseRounded } from "@mui/icons-material";
+import { AddSharp, CloseRounded,  DataUsage } from "@mui/icons-material";
 import {
   ProductFilled,
   InboxOutlined,
@@ -18,51 +18,6 @@ import { useEffect, useState } from "react";
 import "animate.css";
 import axios from "axios";
 
-const products = [
-  {
-    img: shoe,
-    name: "Sneaker-Black",
-    brand: "NIKE",
-    price: "850.00",
-    stock: "178",
-  },
-  {
-    img: laptop,
-    name: "Xeon Pro 15",
-    brand: "DELL",
-    price: "1499.99",
-    stock: "50",
-  },
-  {
-    img: backpack,
-    name: "Traverse 40L",
-    brand: "THE NORTH FACE",
-    price: "129.95",
-    stock: "225",
-  },
-  {
-    img: smartwatch,
-    name: "Active X3",
-    brand: "FITBIT",
-    price: "249.99",
-    stock: "180",
-  },
-  {
-    img: ps5,
-    name: "PlayStation 5",
-    brand: "SONY",
-    price: "499.99",
-    stock: "3",
-  },
-  {
-    img: lamp,
-    name: "Table Lamp",
-    brand: "PHILIPS",
-    price: "699.00",
-    stock: "10",
-  },
-];
-
 function refreshPage()
 {
   window.location.reload();
@@ -80,6 +35,7 @@ function Heading(props) {
           placeholder="Search here.."
         />
       </div>
+      <div className="flex gap-[20px]">
       <button
         className="bg-[#5B83D7] w-fit h-[50px] text-slate-50 rounded-md flex items-center p-[15px] font-medium"
         onClick={props.addProdHandle}
@@ -87,6 +43,14 @@ function Heading(props) {
         <AddSharp />
         New Product
       </button>
+      <button
+        className="bg-[#5B83D7] w-fit h-[50px] text-slate-50 rounded-md flex items-center p-[15px] font-medium gap-[10px]"
+        onClick={props.handleStats}
+      >
+        <DataUsage />
+        Stats
+      </button>
+      </div>
     </div>
   );
 }
@@ -94,7 +58,7 @@ function Heading(props) {
 function AddProduct(props) {
   return (
     <div
-      className="w-[30%] h-screen z-20 flex flex-col p-10 pt-[50px] fixed top-0 right-0 bg-[#FFFFFF] overflow-scroll"
+      className="w-[30%] h-screen z-20 flex flex-col p-10 pt-[50px] fixed top-0 right-0 bg-[#FFFFFF] overflow-scroll animate__animated animate__slideInRight"
       style={{ display: props.open ? "block" : "none" }}
     >
     <div className="flex flex-row items-center justify-between mb-[20px]">
@@ -123,7 +87,7 @@ function AddProduct(props) {
         <h1 className="text-xl">Add image</h1>
         <input
           type="file"
-          accept="image/jpg, image/png"
+          accept=".jpn,.png,.jpeg"
           className="border-2 m-[10px] w-[50%] mb-[20px]"
           name="image"
         />
@@ -244,24 +208,27 @@ function ProductModal(props) {
 function ProductCard(props) {
   return (
     <div
-      className="flex flex-col h-fit w-[250px] m-[20px] ml-[0px] p-5 rounded-2xl cursor-pointer shadow-[10px_10px_15px_-3px_rgba(0,0,0,0.1)] bg-[#FFFFFF]"
+      className="flex flex-col h-fit w-[20%] m-[20px] ml-[0px] rounded-2xl cursor-pointer shadow-[10px_10px_15px_-3px_rgba(0,0,0,0.1)] bg-[#FFFFFF]"
       onClick={() => props.clickEvent(props.id)}
     >
-      <img src={props.img} className="size-full rounded-xl" />
+      <img src={props.img} className="size-full rounded-t-xl" />
+      <div className="flex flex-col p-5">
       <h1 className="text-2xl font-semibold my-[5px]">{props.name}</h1>
       <h1 className="font-light mb-[5px]">{props.brand}</h1>
       <div className="flex items-center justify-between">
         <h1 className="font-semibold">Rs. {props.price}</h1>
         <h1 className="text-blue-400">{props.stock} left</h1>
       </div>
+      </div>
     </div>
   );
 }
 
 function Stats(props) {
+
   return (
     <div
-      className="flex flex-col w-[40%] p-5 grow-0 border-l-2"
+      className="flex flex-col w-[40%] p-5 grow-0 border-l-2 animate__animated animate__slideInRight"
       style={{ display: props.close ? "none" : "block" }}
     >
       <div className="flex flex-row justify-between items-center mb-[10px]">
@@ -363,7 +330,7 @@ function Stats(props) {
 }
 
 function Body() {
-  const [closeStats, setCloseStats] = useState(false);
+  const [closeStats, setCloseStats] = useState(true);
   const [modal, setModal] = useState(false);
   const [modalKey, setModalKey] = useState(0);
   const [addProd, setAddProd] = useState(false);
@@ -388,7 +355,7 @@ function Body() {
   return (
     <div className="w-screen h-full p-5 bg-[#F4F6FA] flex gap-[20px] overflow-scroll">
       <div className="w-full grow-1">
-        <Heading addProdHandle={() => setAddProd(true)} />
+        <Heading addProdHandle={() => setAddProd(true)} handleStats={()=>setCloseStats(false)}/>
         <div className="flex flex-wrap h-screen overflow-scroll">
           {productsData.map((item, index) => {
             return (
