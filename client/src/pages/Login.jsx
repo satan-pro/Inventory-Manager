@@ -27,7 +27,7 @@ export default function Login(props) {
     axios.post(`http://localhost:3000/auth/login`,{
         authData:formObject
     }).then((response)=>{
-        response.data.success?response.data.type==='customer'?window.location='/':window.location='/home':window.location.reload();
+        response.data.success?response.data.type==='customer'?window.location='/':window.location='/home/orders':window.location.reload();
     }).catch((err)=>{
         console.log(err);
     });

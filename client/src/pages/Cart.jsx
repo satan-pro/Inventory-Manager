@@ -6,6 +6,7 @@ import StepLabel from "@mui/material/StepLabel";
 import axios from "axios";
 import qr from "../assets/qr.jpg";
 import { Update } from "@mui/icons-material";
+import { useToast } from '@chakra-ui/react';
 
 function UserDetails(props) {
   const handleSubmit = (event) => {
@@ -117,6 +118,8 @@ function Checkout(props) {
     })
   }
 
+  const toast = useToast();
+
   return (
     <div className="w-[90%] flex flex-col gap-[20px] mt-[20px]" style={{display:props.disp?"none":"block"}}>
       <h1 className="text-3xl font-base">Payment Portal</h1>
@@ -124,7 +127,14 @@ function Checkout(props) {
         <img src={qr} className="w-[40%]" />
       </div>
       <div className="flex justify-center p-5">
-      <button className="w-fit bg-[#5B83D7] p-2.5 text-lg text-white rounded-md" onClick={()=>placeOrder()}>
+      <button className="w-fit bg-[#5B83D7] p-2.5 text-lg text-white rounded-md" onClick={()=>{placeOrder()
+      toast({
+        title:'Order Placed.',
+        description:"Thank you for ordering with us.",
+        status:'success',
+        duration:8000,
+        isClosable:true,
+      })}}>
             Place Order
           </button>
       </div>

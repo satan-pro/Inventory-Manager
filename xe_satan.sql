@@ -64,23 +64,8 @@ foreign key(product_id) references products);
 
 drop table cart;
 
-create or replace function authFunc(username in admins.admin_name%type) 
-return varchar
-as
-    authPass varchar(20);
-begin 
-    select pass into authPass from admins where admins.admin_name=username;
-    return authPass;
-end;
-/
-select * from admins;
-commit;
+create or replace function 
 
-set serveroutput on 
-begin
-    dbms_output.put_line(authFunc('Satan'));
-end;
-/
 select * from admins;
 
 insert into admins values('1234','Satan','satan@ceo','123');
@@ -180,13 +165,13 @@ INSERT INTO invoice (order_id, product_id, sell_price, product_quantity) VALUES
 INSERT INTO invoice (order_id, product_id, sell_price, product_quantity) VALUES 
 ('O010', 'P004', 25.00, 2);
 
-select * from invoice;
+select * from orders;
 
 select * from (orders join (products join invoice using(product_id)) using(order_id)) join customers using(customer_id) join supplier using(supplier_id) where order_id='O001';
 
 select status from (orders join customers using(customer_id)) join delivery using(order_id) where order_id='O001';
 
-select sum(sell_price) as total from orders join invoice using(order_id) group by order_id having order_id='O001';
+select sum(sell_price) as total from orders join invoice using(order_id) group by order_id having order_id='O5947';
 
 select * from products order by product_id;
 
@@ -221,3 +206,7 @@ select * from products;
 select * from (cart join products using(product_id)) join invoice using(product_id) where customer_id='9772';
 select * from cart join products using(product_id) where customer_id='1309';
 delete from cart where customer_id='9772';
+
+select count(product_id) as catCount, product_category from products group by product_category;
+
+select count(product_id) as prodCount, product_category from invoice join products using(product_id) group by product_category;

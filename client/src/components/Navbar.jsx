@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 export default function Navbar(props) {
   return (
     <div className="w-full h-fit p-5 px-[100px] flex flex-row justify-between items-center border-b-2 fixed top-0 left-0 bg-white">
-    <Link to="/home">
+    <Link to="/home/orders">
       <div className="w-[45%] text-3xl font-medium text-blue-500">InBiz</div>
       </Link>
       <div className="w-fit flex flex-row items-center gap-[10px]">

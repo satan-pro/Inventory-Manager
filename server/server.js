@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const multer = require("multer");
+const oracledb = require('oracledb');
 const { connectToDatabase } = require("./database/database");
 const { v4: uuidv4 } = require("uuid");
 const { autoCommit } = require("oracledb");
@@ -15,7 +16,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 function generateRandom() {
   // Generate a random number between 100 and 999
-  return Math.floor(Math.random() * (99999 - 10000 + 1)) + 10000;
+  return Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
 }
 
 const storageConfig = multer.diskStorage({
@@ -329,6 +330,8 @@ app.post("/auth/:loginType", function (req, res) {
     }
   }
 
+  let sqI = `:begin :pass:=:authFunc(); end;`;
+
   async function getAdmin() {
     const sql = `select admin_id, pass from admins where admin_name=:name`;
 
@@ -579,3 +582,109 @@ app.get("/cart/:sid", function(req, res){
   })
 });
 
+app.get("/products/stats", function(req, res){
+
+  let result = {};
+  async function getTotalProducts()
+  {
+    const sql = `select count(*) as prodCount from products`;
+
+    const result = await connection.execute(sql);
+    return result.rows;
+  }
+
+  async function getTotalOrders()
+  {
+    const sql = `select count(*) as orderCount from orders`;
+
+    const result = await connection.execute(sql);
+    return result.rows;
+  }
+
+  async function getPacked()
+  {
+    const sql = `select count(*) as packed from delivery where status='Packed'`;
+
+    const result = await connection.execute(sql);
+    return result.rows;
+  }
+
+  async function getShipped()
+  {
+    const sql = `select count(*) as shipped from delivery where status='Shipped'`;
+
+    const result = await connection.execute(sql);
+    return result.rows;
+  }
+
+  async function getDelivered()
+  {
+    const sql = `select count(*) as delivered from delivery where status='Delivered'`;
+
+    const result = await connection.execute(sql);
+    return result.rows;
+  }
+
+  async function getCategory()
+  {
+    const sql = `select count(product_id) as items, product_category from products group by product_category`;
+
+    const result = await connection.execute(sql);
+    return result.rows;
+  }
+
+  async function getPopular()
+  {
+    const sql = `begin :pop:=popularProd(); end;`;
+    
+    const result = await connection.execute(sql,{
+      pop:{dir: oracledb.BIND_OUT, type: oracledb.STRING, maxSize: 40},
+    });
+
+    return result.outBinds
+  }
+
+  async function getLeastPopular()
+  {
+    const sql = `begin :les:=leastPopularProd(); end;`;
+    
+    const result = await connection.execute(sql,{
+      les:{dir: oracledb.BIND_OUT, type: oracledb.STRING, maxSize: 40},
+    });
+
+    return result.outBinds
+  }
+
+  (async()=>{
+    const prodCount = await getTotalProducts();
+    const orderCount = await getTotalOrders();
+    const packedCount = await getPacked();
+    const shippedCount = await getShipped();
+    const deliCount = await getDelivered();
+    const catCount = await getCategory();
+    const pop = await getPopular();
+    const les = await getLeastPopular();
+
+    result["products"] = prodCount[0]["PRODCOUNT"];
+    result["orders"] = orderCount[0]["ORDERCOUNT"];
+    result["packed"] = packedCount[0]["PACKED"];
+    result["shipped"] = shippedCount[0]["SHIPPED"];
+    result["delivered"] = deliCount[0]["DELIVERED"];
+    result["category"] = catCount;
+    result["popular"] = pop["pop"];
+    result["least"] = les["les"];
+    res.json(result);
+  })();
+});
+
+app.get("/authUser/:type", function(req, res){
+  const type = req.params.type;
+
+  if(type===userType)
+  {
+    res.json({valid:true})
+  }
+  else{
+    res.json({valid: false});
+  }
+})

@@ -46,13 +46,13 @@ function SearchSpace() {
           defaultValue="Sales Channel"
         >
           <option value="default" selected style={{ display: "none" }}>
-            Sales Channel
+            Delivery Agent
           </option>
-          <option value="Amazon">Amazon</option>
-          <option value="Flipkart">Flipkart</option>
+          <option value="FastShip">FastShip</option>
+          <option value="Parcel Pals">Parcel Pals</option>
           <option value="Shopify">Shopify</option>
-          <option value="EBay">EBay</option>
-          <option value="Etsy">Etsy</option>
+          <option value="SwiftRoute">SwiftRoute</option>
+          <option value="Acme Deliveries">Acme Deliveries</option>
           <option value="None">None</option>
         </select>
 
@@ -348,5 +348,14 @@ function Body() {
 }
 
 export default function Orders() {
+
+  useEffect(()=>{
+    axios.get("http://localhost:3000/authUser/admin").then((response)=>{
+      if(!response.data.valid)
+      {
+        window.location='/login';
+      }
+    })
+  })
   return <Body />;
 }

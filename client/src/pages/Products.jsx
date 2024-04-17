@@ -13,7 +13,8 @@ import backpack from "../assets/backpack.png";
 import smartwatch from "../assets/smartwatch.png";
 import ps5 from "../assets/ps5.png";
 import lamp from "../assets/lamp.png";
-import { PieChart } from "@mui/x-charts";
+//import { PieChart } from "@mui/x-charts";
+import { PieChart } from '@mui/x-charts/PieChart';
 import { useEffect, useState } from "react";
 import "animate.css";
 import axios from "axios";
@@ -226,6 +227,33 @@ function ProductCard(props) {
 
 function Stats(props) {
 
+  const [stats, setStats] = useState(null);
+  const [data, setPieData] = useState([]);
+  let samplePieData = [
+    { id: 0, value: 287 },
+    { id: 1, value: 342 },
+    { id: 2, value: 198 },
+    { id: 3, value: 271 },
+    { id: 4, value: 219 },
+    { id: 5, value: 234 },
+    { id: 6, value: 177 },
+  ];
+  useEffect(()=>{
+    axios.get("http://localhost:3000/products/stats").then((response)=>{
+      setStats(response.data);
+      let newPieData = response.data.category.map((category, index) => ({
+        id: index,
+        value: category.ITEMS,
+        label: category["PRODUCT_CATEGORY"]
+      }));
+      setPieData(newPieData);
+    }).catch((err)=>{
+      console.log(err);
+    })
+  }, []);
+
+  console.log(data);
+
   return (
     <div
       className="flex flex-col w-[40%] p-5 grow-0 border-l-2 animate__animated animate__slideInRight"
@@ -244,7 +272,7 @@ function Stats(props) {
           className="w-fit h-fit bg-[#FFFFFF] flex p-2.5 text-lg gap-[8px] items-center justify-between rounded-3xl bg-[#a9def9] border-2 border-[#3BA5DB] m-[10px] ml-[0px]"
           style={{ borderRadius: "40px" }}
         >
-          <ProductFilled /> 1728 Products
+          <ProductFilled /> {stats && stats.products} Products
         </div>
 
         <div
@@ -252,28 +280,28 @@ function Stats(props) {
           style={{ borderRadius: "40px" }}
         >
           <InboxOutlined />
-          258 Orders
+          {stats && stats.orders} Orders
         </div>
         <div
           className="w-fit h-fit bg-[#FFFFFF] flex p-2.5 text-lg gap-[8px] items-center justify-between rounded-3xl bg-[#e4c1f9] border-2 border-[#C469FB] m-[10px] ml-[0px]"
           style={{ borderRadius: "40px" }}
         >
           <ShoppingFilled />
-          150 Packed
+          {stats && stats.packed} Packed
         </div>
         <div
           className="w-fit h-fit bg-[#FFFFFF] flex p-2.5 text-lg gap-[8px] items-center justify-between rounded-3xl bg-[#fcf6bd] border-2 border-[#F1DD23] m-[10px] ml-[0px]"
           style={{ borderRadius: "40px" }}
         >
           <TruckFilled />
-          70 Shipped
+          {stats && stats.shipped} Shipped
         </div>
         <div
           className="w-fit h-fit bg-[#FFFFFF] flex p-2.5 text-lg gap-[8px] items-center justify-between rounded-3xl bg-[#d0f4de] border-2 border-[#31C96C] m-[10px] ml-[0px]"
           style={{ borderRadius: "40px" }}
         >
           <CheckCircleOutlined />
-          38 Delivered
+          {stats && stats.delivered} Delivered
         </div>
       </div>
       <div className="flex justify-between items-center border-b-2 pb-[20px]">
@@ -292,36 +320,23 @@ function Stats(props) {
       </div>
       <div className="py-[30px] flex flex-col items-center">
         <PieChart
-          series={[
-            {
-              data: [
-                { id: 0, value: 287 },
-                { id: 1, value: 342 },
-                { id: 2, value: 198 },
-                { id: 3, value: 271 },
-                { id: 4, value: 219 },
-                { id: 5, value: 234 },
-                { id: 6, value: 177 },
-              ],
-              innerRadius: 30,
-              outerRadius: 100,
-              paddingAngle: 5,
-              cornerRadius: 5,
-              startAngle: -90,
-              endAngle: 180,
-            },
-          ]}
-          width={400}
-          height={200}
-        />
+      series={[
+        {
+          data,
+          highlightScope: { faded: 'global', highlighted: 'item' },
+          faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
+        },
+      ]}
+      height={200}
+    />
         <div className="flex flex-row w-full h-[75%] justify-between mt-[30px]">
           <div className="w-[45%] mb-[10px] border-r-2">
             <h1 className="text-xl font-medium">Most Popular</h1>
-            <h3>Electronics</h3>
+            <h3>{stats && stats.popular}</h3>
           </div>
           <div className="w-[45%] mb-[10px]">
             <h1 className="text-xl font-medium">Least Popular</h1>
-            <h3>Stationery</h3>
+            <h3>{stats && stats.least}</h3>
           </div>
         </div>
       </div>
@@ -388,5 +403,14 @@ function Body() {
 }
 
 export default function Products() {
+
+  useEffect(()=>{
+    axios.get("http://localhost:3000/authUser/admin").then((response)=>{
+      if(!response.data.valid)
+      {
+        window.loaction='/login';
+      }
+    })
+  })
   return <Body />;
 }
