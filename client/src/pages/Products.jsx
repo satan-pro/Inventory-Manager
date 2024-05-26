@@ -110,7 +110,7 @@ function ProductModal(props) {
     const formData = new FormData(event.target);
     const formObject = Object.fromEntries(formData.entries());
 
-    axios.post(`http://localhost:3000/productUpdate/${props.obj["PRODUCT_ID"]}`,{
+    axios.post(`http://localhost:3000/products/update/${props.obj["product_id"]}`,{
       prodData:formObject
     }).then((response)=>{
       console.log(response);
@@ -123,7 +123,7 @@ function ProductModal(props) {
 
   if(delProd)
   {
-    axios.post(`http://localhost:3000/productDelete/${props.obj["PRODUCT_ID"]}`)
+    axios.post(`http://localhost:3000/products/delete/${props.obj["product_id"]}`)
     .then((response)=>{
       console.log(response);
       props.onClose();
@@ -151,7 +151,7 @@ function ProductModal(props) {
           Edit <EditOutlined />
         </h1>
         <img
-          src={props.obj["PRODUCT_IMG"]}
+          src={props.obj["product_img"]}
           className="w-[50%] h-[50%] rounded-xl mx-auto"
         />
       </div>
@@ -162,7 +162,7 @@ function ProductModal(props) {
           type="text"
           className="text-xl font-medium bg-transparent p-[5px] border-2 rounded-lg"
           name="pname"
-          defaultValue={props.obj["PRODUCT_NAME"]}
+          defaultValue={props.obj["product_name"]}
         />
       </div>
       <h1 className="text-sm font-light mb-[5px]">Brand</h1>
@@ -170,7 +170,7 @@ function ProductModal(props) {
         type="text"
         className="max-w-[50%] text-xl font-medium bg-transparent p-[5px] border-2 rounded-lg mb-[10px]"
         name="brand"
-        defaultValue={props.obj["BRAND"]}
+        defaultValue={props.obj["brand"]}
       />
       <div className="flex flex-row justify-between mb-[20px]">
         <div className="flex flex-col">
@@ -179,7 +179,7 @@ function ProductModal(props) {
             type="number"
             className="w-[150px] text-xl font-medium bg-transparent p-[5px] border-2 rounded-lg mb-[10px]"
             name="price"
-            defaultValue={props.obj["COST_PRICE"]}
+            defaultValue={props.obj["cost_price"]}
           />
         </div>
         <div className="flex flex-col">
@@ -188,7 +188,7 @@ function ProductModal(props) {
             type="number"
             className="w-[150px] text-xl font-medium bg-transparent p-[5px] border-2 rounded-lg mb-[10px]"
             name="quantity"
-            defaultValue={props.obj["QUANTITY"]}
+            defaultValue={props.obj["quantity"]}
           />
         </div>
       </div>
@@ -243,8 +243,8 @@ function Stats(props) {
       setStats(response.data);
       let newPieData = response.data.category.map((category, index) => ({
         id: index,
-        value: category.ITEMS,
-        label: category["PRODUCT_CATEGORY"]
+        value: category["items"],
+        label: category["product_category"]
       }));
       setPieData(newPieData);
     }).catch((err)=>{
@@ -377,11 +377,11 @@ function Body() {
               <ProductCard
                 key={index}
                 id={index}
-                img={item["PRODUCT_IMG"]}
-                name={item["PRODUCT_NAME"]}
-                brand={item["BRAND"]}
-                price={item["COST_PRICE"]}
-                stock={item["QUANTITY"]}
+                img={item["product_img"]}
+                name={item["product_name"]}
+                brand={item["brand"]}
+                price={item["cost_price"]}
+                stock={item["quantity"]}
                 clickEvent={(key) => modalControl(key)}
               />
             );
@@ -405,10 +405,10 @@ function Body() {
 export default function Products() {
 
   useEffect(()=>{
-    axios.get("http://localhost:3000/authUser/admin").then((response)=>{
+    axios.get("http://localhost:3000/auth/authUser/admin").then((response)=>{
       if(!response.data.valid)
       {
-        window.loaction='/login';
+        window.location='/login';
       }
     })
   })

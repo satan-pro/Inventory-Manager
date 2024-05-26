@@ -106,7 +106,7 @@ function Checkout(props) {
 
   function placeOrder()
   {
-    axios.get("http://localhost:3000/placeOrder").then((response)=>{
+    axios.get("http://localhost:3000/cart/placeOrder").then((response)=>{
       if(response.data.sucess)
       {
         console.log('succ');
@@ -165,7 +165,7 @@ function UpdateCart(props)
         return(
           <div className="w=[80%] flex gap-[20px]" key={index}>
             <img src={item["PRODUCT_IMG"]} />
-            <h1 className="text-xl font-base">{item["PRODUCT_NAME"]}</h1>
+            <h1 className="text-xl font-base">{item["product_name"]}</h1>
           </div>
         )
       })}

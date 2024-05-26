@@ -8,7 +8,7 @@ function Query(props) {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:3000/productQuery/${props.type}`)
+      .get(`http://localhost:3000/products/query/${props.type}`)
       .then((response) => {
         setCategories(response.data.queryRes);
         console.log(categories);
@@ -22,9 +22,9 @@ function Query(props) {
           <div className="flex items-center gap-[10px] m-[10px]" key={index}>
             <input type="checkbox" />
             {props.type === "category" ? (
-              <h1 className="text-lg">{elem["PRODUCT_CATEGORY"]}</h1>
+              <h1 className="text-lg">{elem["product_category"]}</h1>
             ) : props.type === "supplier" ? (
-              <h1 className="text-lg">{elem["SUPPLIER_NAME"]}</h1>
+              <h1 className="text-lg">{elem["supplier_name"]}</h1>
             ) : null}
           </div>
         );
@@ -80,7 +80,7 @@ function ProductCard(props) {
 
   function handleClick(){
     console.log('clciked');
-    axios.get(`http://localhost:3000/cart/${props.item["PRODUCT_ID"]}`).then((response)=>{
+    axios.get(`http://localhost:3000/cart/${props.item["product_id"]}`).then((response)=>{
       console.log(response);
     })
     .catch((err)=>{
@@ -90,16 +90,16 @@ function ProductCard(props) {
 
   return (
     <div className="flex flex-col w-[30%] h-fit">
-      <img src={props.item["PRODUCT_IMG"]} className="size-full" />
+      <img src={props.item["product_img"]} className="size-full" />
       <div className="flex py-5 justify-between">
         <div className="flex flex-col">
-          <h1 className="text-xl font-medium">{props.item["PRODUCT_NAME"]}</h1>
-          <h1 className="text-base font-light">{props.item["BRAND"]}</h1>
+          <h1 className="text-xl font-medium">{props.item["product_name"]}</h1>
+          <h1 className="text-base font-light">{props.item["brand"]}</h1>
         </div>
         <div className="flex flex-col items-end">
-          <h1 className="text-2xl font-medium">₹{props.item["COST_PRICE"]}</h1>
+          <h1 className="text-2xl font-medium">₹{props.item["cost_price"]}</h1>
           <h1 className="text-sm font-base text-blue-400">
-            {props.item["QUANTITY"]} left
+            {props.item["quantity"]} left
           </h1>
         </div>
       </div>
@@ -111,7 +111,7 @@ function ProductCard(props) {
           handleClick();
           setBtnClick(true);
           setOpenSnackbar(true);
-          setSnackbarMsg(`${props.item["PRODUCT_NAME"]} added to cart`);
+          setSnackbarMsg(`${props.item["product_name"]} added to cart`);
         }}
       >
         {btnClick ? "Added" : "Add to Cart"}

@@ -210,3 +210,5 @@ delete from cart where customer_id='9772';
 select count(product_id) as catCount, product_category from products group by product_category;
 
 select count(product_id) as prodCount, product_category from invoice join products using(product_id) group by product_category;
+
+desc delivery;

@@ -134,19 +134,19 @@ function OrderPreview(props) {
                     key={index}
                   >
                     <img
-                      src={product["PRODUCT_IMG"]}
+                      src={product["product_img"]}
                       className="size-[30%] rounded-lg"
                     />
                     <div className="flex flex-col">
                       <h1 className="text-xl font-medium">
-                        {product["PRODUCT_NAME"]}
+                        {product["product_name"]}
                       </h1>
                       <h1 className="text-lg font-light">{product["BRAND"]}</h1>
                       <h1 className="text-lg">
-                        Items : {product["PRODUCT_QUANTITY"]}
+                        Items : {product["product_quantity"]}
                       </h1>
                       <h1 className="text-md">
-                        Price : {product["SELL_PRICE"]}
+                        Price : {product["sell_price"]}
                       </h1>
                     </div>
                   </div>
@@ -241,10 +241,10 @@ function Table(props) {
             {detailedOrder && detailedOrder.map((product, index) => {
               return (
                 <tr className="p-[20px] h-[50px] text-left" key={index}>
-                  <td>{product["PRODUCT_NAME"]}</td>
-                  <td>{product["PRODUCT_QUANTITY"]}</td>
-                  <td>{product["SELL_PRICE"]}</td>
-                  <td>{product["SUPPLIER_NAME"]}</td>
+                  <td>{product["product_name"]}</td>
+                  <td>{product["product_quantity"]}</td>
+                  <td>{product["sell_price"]}</td>
+                  <td>{product["supplier_name"]}</td>
                 </tr>
               );
             })}
@@ -278,7 +278,7 @@ function Table(props) {
               className="text-left min-h-5 border-b-2"
               style={{
                 height: "70px",
-                backgroundColor: selectedCheckboxes.includes(item["ORDER_ID"])
+                backgroundColor: selectedCheckboxes.includes(item["order_id"])
                   ? "#a2d2ff"
                   : "#FFFFFF",
               }}
@@ -286,26 +286,26 @@ function Table(props) {
               <td>
                 <input
                   type="checkbox"
-                  onChange={() => toggleCheckbox(item["ORDER_ID"])}
+                  onChange={() => toggleCheckbox(item["order_id"])}
                   className="h-[20px] w-[20px] cursor-pointer"
                 />
               </td>
               <td
                 className="text-blue-400 cursor-pointer"
                 onClick={() => {
-                  props.previewClick(item["ORDER_ID"]);
+                  props.previewClick(item["order_id"]);
                 }}
               >
-                {item["ORDER_ID"]}
+                {item["order_id"]}
               </td>
-              <td>{item["ORDER_DATE"].substring(0, 10)}</td>
-              <td>{item["CUSTOMER_NAME"]}</td>
-              <td>{item["DELIVERY_AGENT"]}</td>
-              <td>{item["STATUS"]}</td>
+              <td>{item["order_date"].substring(0, 10)}</td>
+              <td>{item["customer_name"]}</td>
+              <td>{item["delivery_agent"]}</td>
+              <td>{item["status"]}</td>
               <td>
                 <div
                   className="bg-gray-400 w-[20px] h-[20px] flex items-center justify-center rounded-[50%] cursor-pointer"
-                  onClick={() => toggleDropdownRow(item["ORDER_ID"])}
+                  onClick={() => toggleDropdownRow(item["order_id"])}
                 >
                   <KeyboardArrowDownRounded />
                 </div>
@@ -313,7 +313,7 @@ function Table(props) {
             </tr>
             <tr>
               <td colSpan="7" className="w-full">
-                <DropdownRow id={item["ORDER_ID"]} />
+                <DropdownRow id={item["order_id"]} />
               </td>
             </tr>
           </tbody>
@@ -350,7 +350,7 @@ function Body() {
 export default function Orders() {
 
   useEffect(()=>{
-    axios.get("http://localhost:3000/authUser/admin").then((response)=>{
+    axios.get("http://localhost:3000/auth/authUser/admin").then((response)=>{
       if(!response.data.valid)
       {
         window.location='/login';
