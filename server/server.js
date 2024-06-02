@@ -5,6 +5,7 @@ const multer = require("multer");
 const orders = require('./routes/orders');
 const products = require('./routes/products');
 const defaultRoute = require('./routes/default');
+require('dotenv').configure();
 //const cart = require('./routes/cart');
 
 const app = express();
@@ -14,7 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 //app.use(express.static('../client/public/product_images'));
 
-function generateRandom() {
+/* function generateRandom() {
   // Generate a random number between 100 and 999
   return Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
 }
@@ -27,7 +28,7 @@ const storageConfig = multer.diskStorage({
     cb(null, Date.now() + "-" + file.originalname);
   },
 });
-const upload = multer({ storage: storageConfig });
+const upload = multer({ storage: storageConfig }); */
 
 app.use('/orders', orders);
 app.use('/products', products);
