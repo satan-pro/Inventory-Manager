@@ -21,10 +21,10 @@ module.exports={
     connectToDatabase : connectToDatabase
 } */
 const pool = mysql.createPool({
-    host: 'localhost',
-    user: 'satan',
-    password: '1234',
-    database: 'satan',
+    host: process.env.HOST,
+    user: process.env.USER,
+    password: process.env.PASSWORD,
+    database: process.env.DATABASE,
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0

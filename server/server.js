@@ -5,7 +5,7 @@ const multer = require("multer");
 const orders = require('./routes/orders');
 const products = require('./routes/products');
 const defaultRoute = require('./routes/default');
-require('dotenv').configure();
+require('dotenv').config();
 //const cart = require('./routes/cart');
 
 const app = express();
