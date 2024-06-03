@@ -22,13 +22,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const storageConfig = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "../client/public/product_images");
+    cb(null, "./uploads");
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + "-" + file.originalname);
   },
 });
-const upload = multer({ storage: storageConfig }); */
+const upload = multer({ storage: storageConfig });
+ */
 
 app.use('/orders', orders);
 app.use('/products', products);

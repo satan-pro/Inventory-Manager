@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 const apiUrl = "https://inbiz.onrender.com";
+//const apiUrl = "http://localhost:3000";
 
 export default function Login(props) {
   const [loginBtn, setLoginBtn] = useState(true);

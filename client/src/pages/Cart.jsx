@@ -9,6 +9,7 @@ import { Update } from "@mui/icons-material";
 import { useToast } from '@chakra-ui/react';
 
 const apiUrl = "https://inbiz.onrender.com";
+//const apiUrl = "http://localhost:3000";
 
 function UserDetails(props) {
   const handleSubmit = (event) => {

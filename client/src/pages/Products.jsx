@@ -20,6 +20,7 @@ import "animate.css";
 import axios from "axios";
 
 const apiUrl = "https://inbiz.onrender.com";
+//const apiUrl = "http://localhost:3000";
 
 function refreshPage()
 {

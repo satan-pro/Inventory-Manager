@@ -4,6 +4,7 @@ import Snackbar from "@mui/material/Snackbar";
 import axios from "axios";
 
 const apiUrl = "https://inbiz.onrender.com";
+//const apiUrl = "http://localhost:3000";
 
 function Query(props) {
   const [categories, setCategories] = useState([]);
