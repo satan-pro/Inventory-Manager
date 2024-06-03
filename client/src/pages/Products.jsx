@@ -72,7 +72,7 @@ function AddProduct(props) {
           onClick={props.onClose}
         />
       </div>
-      <form action="http://localhost:3000/products" method="POST" encType="multipart/form-data" className="flex flex-col">
+      <form action="https://inbiz.onrender.com/products" method="POST" encType="multipart/form-data" className="flex flex-col">
         <h1 className="text-xl">Product Id</h1> 
         <input type="text" name="pid" className="border-2 border-text-gray-400 m-[10px] w-[75%] rounded-lg h-[50px] p-5" />
         <h1 className="text-xl">Product Name</h1>
