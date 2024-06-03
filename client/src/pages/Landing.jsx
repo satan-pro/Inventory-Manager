@@ -148,7 +148,7 @@ function ProductDisplay(props) {
 
   return (
     <div className="flex flex-wrap p-5 w-[70%] gap-[30px]">
-      {products.map((product, index) => {
+      {products && products.map((product, index) => {
         return <ProductCard key={index} item={product} addItem={(item)=>cartUpdate(item)}/>;
       })}
     </div>

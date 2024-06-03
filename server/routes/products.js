@@ -209,7 +209,7 @@ router.get("/", function (req, res) {
   
     async function getPopular()
     {
-      const sql = `select popularProd() as 'Popular Category'`;
+      const sql = `SELECT product_category FROM ( SELECT p.product_category, COUNT(p.product_id) AS prodCount FROM invoice i JOIN products p ON i.product_id = p.product_id GROUP BY p.product_category ORDER BY prodCount DESC) AS category_counts`;
       
       const [result] = await connection.execute(sql);
   
@@ -218,7 +218,7 @@ router.get("/", function (req, res) {
   
     async function getLeastPopular()
     {
-      const sql = `SELECT leastPopularProd() AS 'Least Category';`;
+      const sql = `SELECT product_category FROM (SELECT p.product_category, COUNT(p.product_id) AS prodCount FROM invoice i JOIN products p ON i.product_id = p.product_id GROUP BY p.product_category ORDER BY prodCount ASC) AS category_counts`;
       
       const [result] = await connection.execute(sql);
   
@@ -243,8 +243,8 @@ router.get("/", function (req, res) {
       result["shipped"] = shippedCount[0]["shipped"];
       result["delivered"] = deliCount[0]["delivered"];
       result["category"] = catCount;
-      result["popular"] = pop[0]["Popular Category"];
-      result["least"] = les[0]["Least Category"];
+      result["popular"] = pop[0]["product_category"];
+      result["least"] = les[0]["product_category"];
       res.json(result);
     })();
   });
