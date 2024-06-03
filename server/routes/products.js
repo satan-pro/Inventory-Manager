@@ -68,7 +68,7 @@ router.get("/", function (req, res) {
   
     addProduct()
       .then((dbRes) => {
-        res.redirect("http://localhost:5173/home/products");
+        res.redirect("https://inbiz.vercel.app/home/products");
       })
       .catch((err) => {
         res.send(err);
