@@ -215,7 +215,7 @@ function ProductCard(props) {
       className="flex flex-col h-fit w-[20%] m-[20px] ml-[0px] rounded-2xl cursor-pointer shadow-[10px_10px_15px_-3px_rgba(0,0,0,0.1)] bg-[#FFFFFF]"
       onClick={() => props.clickEvent(props.id)}
     >
-      <img src={props.img} className="size-full rounded-t-xl" />
+      <img src={require(props.img)} className="size-full rounded-t-xl" alt="image"/>
       <div className="flex flex-col p-5">
       <h1 className="text-2xl font-semibold my-[5px]">{props.name}</h1>
       <h1 className="font-light mb-[5px]">{props.brand}</h1>
