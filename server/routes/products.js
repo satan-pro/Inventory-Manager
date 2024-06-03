@@ -14,7 +14,7 @@ router.use(bodyParser.urlencoded({ extended: true }));
 
 const storageConfig = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "../client/public/product_images");
+    cb(null, "client/public/product_images");
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + "-" + file.originalname);
@@ -42,7 +42,7 @@ router.get("/", function (req, res) {
     const uploadedFile = req.file;
     const prodData = req.body;
   
-    let imgPath = uploadedFile.path.substring(16);
+    let imgPath = uploadedFile.path.substring(13);
     console.log(prodData);
     console.log(imgPath);
   
