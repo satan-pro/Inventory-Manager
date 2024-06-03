@@ -11,6 +11,11 @@ import shoe from "../assets/shoe.png";
 import smartwatch from "../assets/smartwatch.png";
 import { Steps } from "antd";
 import "animate.css";
+//import 'dotenv/config';
+
+//const apiUrl = process.env.REACT_APP_API_URL;
+
+const apiUrl = "https://inbiz.onrender.com";
 
 function Heading() {
   return (
@@ -81,7 +86,7 @@ function OrderPreview(props) {
   const [deliveryStatus, setDeliveryStatus] = useState(0);
 
   useEffect(() => {
-    axios.get(`http://localhost:3000/orders/${props.data}`).then((response) => {
+    axios.get(`${apiUrl}/orders/${props.data}`).then((response) => {
       setPreviewData(response.data);
     });
     if (previewData["deliveryStatus"] == "Packed") setDeliveryStatus(1);
@@ -187,7 +192,7 @@ function Table(props) {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:3000/orders").then((response) => {
+    axios.get(`${apiUrl}/orders`).then((response) => {
       setOrders(response.data.orders);
     });
   }, []);
@@ -220,7 +225,7 @@ function Table(props) {
     const [detailedOrder, setDetailedOrder] = useState([]);
 
     useEffect(() => {
-      axios.get(`http://localhost:3000/orders/${props.id}`).then((response) => {
+      axios.get(`${apiUrl}/orders/${props.id}`).then((response) => {
         setDetailedOrder(response.data["detailedOrders"]);
       });
     }, []);
@@ -350,7 +355,7 @@ function Body() {
 export default function Orders() {
 
   useEffect(()=>{
-    axios.get("http://localhost:3000/auth/authUser/admin").then((response)=>{
+    axios.get(`${apiUrl}/auth/authUser/admin`).then((response)=>{
       if(!response.data.valid)
       {
         window.location='/login';

@@ -3,12 +3,14 @@ import Navbar from "../components/Navbar";
 import Snackbar from "@mui/material/Snackbar";
 import axios from "axios";
 
+const apiUrl = "https://inbiz.onrender.com";
+
 function Query(props) {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     axios
-      .get(`http://localhost:3000/products/query/${props.type}`)
+      .get(`${apiUrl}/products/query/${props.type}`)
       .then((response) => {
         setCategories(response.data.queryRes);
         console.log(categories);
@@ -80,7 +82,7 @@ function ProductCard(props) {
 
   function handleClick(){
     console.log('clciked');
-    axios.get(`http://localhost:3000/cart/${props.item["product_id"]}`).then((response)=>{
+    axios.get(`${apiUrl}/cart/${props.item["product_id"]}`).then((response)=>{
       console.log(response);
     })
     .catch((err)=>{
@@ -139,7 +141,7 @@ function ProductDisplay(props) {
   }
 
   useEffect(() => {
-    axios.get("http://localhost:3000/products").then((response) => {
+    axios.get(`${apiUrl}/products`).then((response) => {
       getProducts(response.data);
     });
   }, []);

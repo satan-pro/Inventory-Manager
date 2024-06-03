@@ -1,5 +1,6 @@
 const mysql = require('mysql2/promise');
 require('dotenv').config();
+
 //oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
 /* async function connectToDatabase()
 {

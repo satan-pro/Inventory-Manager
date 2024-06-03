@@ -8,6 +8,8 @@ import qr from "../assets/qr.jpg";
 import { Update } from "@mui/icons-material";
 import { useToast } from '@chakra-ui/react';
 
+const apiUrl = "https://inbiz.onrender.com";
+
 function UserDetails(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -16,7 +18,7 @@ function UserDetails(props) {
     const formObject = Object.fromEntries(formData.entries());
 
     axios
-      .post("http://localhost:3000/cart", {
+      .post(`${apiUrl}/cart`, {
         cartData: formObject,
       })
       .then((response) => {
@@ -106,7 +108,7 @@ function Checkout(props) {
 
   function placeOrder()
   {
-    axios.get("http://localhost:3000/cart/placeOrder").then((response)=>{
+    axios.get(`${apiUrl}/cart/placeOrder`).then((response)=>{
       if(response.data.sucess)
       {
         console.log('succ');
@@ -148,7 +150,7 @@ function UpdateCart(props)
   useEffect(()=>{
     async function fetchCartData()
     {
-      const response = await axios.get(`http://localhost:3000/cart/${props.id}`);
+      const response = await axios.get(`${apiUrl}/cart/${props.id}`);
       if(response.data.success)
       {
         setCartData(response.data.cartData);

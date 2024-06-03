@@ -19,6 +19,8 @@ import { useEffect, useState } from "react";
 import "animate.css";
 import axios from "axios";
 
+const apiUrl = "https://inbiz.onrender.com";
+
 function refreshPage()
 {
   window.location.reload();
@@ -110,7 +112,7 @@ function ProductModal(props) {
     const formData = new FormData(event.target);
     const formObject = Object.fromEntries(formData.entries());
 
-    axios.post(`http://localhost:3000/products/update/${props.obj["product_id"]}`,{
+    axios.post(`${apiUrl}/products/update/${props.obj["product_id"]}`,{
       prodData:formObject
     }).then((response)=>{
       console.log(response);
@@ -123,7 +125,7 @@ function ProductModal(props) {
 
   if(delProd)
   {
-    axios.post(`http://localhost:3000/products/delete/${props.obj["product_id"]}`)
+    axios.post(`${apiUrl}/products/delete/${props.obj["product_id"]}`)
     .then((response)=>{
       console.log(response);
       props.onClose();
@@ -239,7 +241,7 @@ function Stats(props) {
     { id: 6, value: 177 },
   ];
   useEffect(()=>{
-    axios.get("http://localhost:3000/products/stats").then((response)=>{
+    axios.get(`${apiUrl}/products/stats`).then((response)=>{
       setStats(response.data);
       let newPieData = response.data.category.map((category, index) => ({
         id: index,
@@ -353,7 +355,7 @@ function Body() {
   const [productsData, setProductsData] = useState([]);
 
   const fetchProducts = async ()=>{
-    axios.get("http://localhost:3000/products").then((response)=>{
+    axios.get(`${apiUrl}/products`).then((response)=>{
       setProductsData(response.data);
     })
   }
@@ -405,7 +407,7 @@ function Body() {
 export default function Products() {
 
   useEffect(()=>{
-    axios.get("http://localhost:3000/auth/authUser/admin").then((response)=>{
+    axios.get(`${apiUrl}/auth/authUser/admin`).then((response)=>{
       if(!response.data.valid)
       {
         window.location='/login';

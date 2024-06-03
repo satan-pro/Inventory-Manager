@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+
+const apiUrl = "https://inbiz.onrender.com";
+
 export default function Login(props) {
   const [loginBtn, setLoginBtn] = useState(true);
   const [regBtn, setRegBtn] = useState(false);
@@ -24,7 +27,7 @@ export default function Login(props) {
     const formData = new FormData(event.target);
     const formObject = Object.fromEntries(formData.entries());
 
-    axios.post(`http://localhost:3000/auth/login`,{
+    axios.post(`${apiUrl}/auth/login`,{
         authData:formObject
     }).then((response)=>{
         response.data.success?response.data.type==='customer'?window.location='/':window.location='/home/orders':window.location.reload();
@@ -39,7 +42,7 @@ export default function Login(props) {
     const formData = new FormData(event.target);
     const formObject = Object.fromEntries(formData.entries());
 
-    axios.post(`http://localhost:3000/auth/register`,{
+    axios.post(`${apiUrl}/auth/register`,{
         authData:formObject
     }).then((response)=>{
         response.data.success?window.location='/login':window.location.reload();
