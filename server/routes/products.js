@@ -3,7 +3,6 @@ const {connectToDatabase} = require('../database/database');
 const multer = require("multer");
 const bodyParser = require('body-parser');
 const cloudinary = require('../utils/cloudinary');
-const imagekit = require('../utils/imagekit');
 
 let connection;
 connectToDatabase().then((conn)=>{
