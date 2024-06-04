@@ -3,6 +3,7 @@ const {connectToDatabase} = require('../database/database');
 const multer = require("multer");
 const bodyParser = require('body-parser');
 const cloudinary = require('../utils/cloudinary');
+const imagekit = require('../utils/imagekit');
 
 let connection;
 connectToDatabase().then((conn)=>{
@@ -23,7 +24,6 @@ const storageConfig = multer.diskStorage({
 });
 const upload = multer({ storage: storageConfig });
 
-
 router.get("/", function (req, res) {
     async function fetchProducts() {
       const [result] = await connection.execute('select * from products');
@@ -43,20 +43,30 @@ router.get("/", function (req, res) {
   router.post("/", upload.single("image"), function (req, res) {
     const uploadedFile = req.file;
     const prodData = req.body;
-    let imgName = uploadedFile.filename;
+    var imgName = "bhen ka loda";
 
+    async function uploadCloudinary(){
+    return new Promise((resolve, reject)=>{
     cloudinary.uploader.upload(uploadedFile.path,
-      {public_id: imgName},
+      {public_id: uploadedFile.filename},
       function(error, result)
       {
-        console.log(result);
-      }
-    );
-    
-    console.log(prodData);
+        if(error)
+          {
+            reject(error);
+          }
+          else{
+            console.log(result);
+            resolve(result.secure_url);
+          }
+        });
+      });
+    }
+
+    //console.log(prodData);
     console.log(imgName);
   
-    async function addProduct() {
+    async function addProduct(imgUrl) {
       const binds = [
         prodData.pid,
         prodData.supplier_id,
@@ -65,7 +75,7 @@ router.get("/", function (req, res) {
         prodData.category,
         prodData.quantity,
         prodData.price,
-        imgName 
+        imgUrl
       ];
   
       const sql = `insert into products values(?,?,?,?,?,?,?,?)`;
@@ -75,14 +85,21 @@ router.get("/", function (req, res) {
       return result;
     }
   
-    addProduct()
+    uploadCloudinary().then(async(result)=>{
+      
+    await addProduct(result)
       .then((dbRes) => {
+        console.log(dbRes);
         res.redirect("https://inbiz.vercel.app/home/products");
       })
       .catch((err) => {
         res.send(err);
       });
+  })
+  .catch((err)=>{
+    res.send(err);
   });
+});
   
   router.post("/update/:pid", function (req, res) {
     const pid = req.params.pid;
