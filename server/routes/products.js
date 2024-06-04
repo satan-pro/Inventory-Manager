@@ -84,20 +84,20 @@ router.get("/", function (req, res) {
       return result;
     }
   
-    uploadCloudinary().then(async(result)=>{
+   async function upload(){
+    let imgUrl = await uploadCloudinary();
       
-    await addProduct(result)
+    addProduct(imgUrl)
       .then((dbRes) => {
         console.log(dbRes);
-        res.redirect("https://inbiz.vercel.app/home/products");
+        res.redirect("http://localhost:5173/home/products");
       })
       .catch((err) => {
         res.send(err);
       });
-  })
-  .catch((err)=>{
-    res.send(err);
-  });
+  }
+
+  upload();
 });
   
   router.post("/update/:pid", function (req, res) {
