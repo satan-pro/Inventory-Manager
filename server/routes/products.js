@@ -2,6 +2,7 @@ const express = require('express');
 const {connectToDatabase} = require('../database/database');
 const multer = require("multer");
 const bodyParser = require('body-parser');
+const cloudinary = require('../utils/cloudinary');
 
 let connection;
 connectToDatabase().then((conn)=>{
@@ -14,7 +15,7 @@ router.use(bodyParser.urlencoded({ extended: true }));
 
 const storageConfig = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "../client/public/product_images");
+    cb(null, "./uploads");
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + "-" + file.originalname);
@@ -42,10 +43,18 @@ router.get("/", function (req, res) {
   router.post("/", upload.single("image"), function (req, res) {
     const uploadedFile = req.file;
     const prodData = req.body;
-  
-    let imgPath = uploadedFile.path.substring(16);
+    let imgName = uploadedFile.filename;
+
+    cloudinary.uploader.upload(uploadedFile.path,
+      {public_id: imgName},
+      function(error, result)
+      {
+        console.log(result);
+      }
+    );
+    
     console.log(prodData);
-    console.log(imgPath);
+    console.log(imgName);
   
     async function addProduct() {
       const binds = [
@@ -56,7 +65,7 @@ router.get("/", function (req, res) {
         prodData.category,
         prodData.quantity,
         prodData.price,
-        imgPath 
+        imgName 
       ];
   
       const sql = `insert into products values(?,?,?,?,?,?,?,?)`;

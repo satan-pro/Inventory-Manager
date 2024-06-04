@@ -7,20 +7,22 @@ import {
   TruckFilled,
   CheckCircleOutlined,
 } from "@ant-design/icons";
-import shoe from "../assets/shoe.png";
-import laptop from "../assets/laptop.png";
-import backpack from "../assets/backpack.png";
-import smartwatch from "../assets/smartwatch.png";
-import ps5 from "../assets/ps5.png";
-import lamp from "../assets/lamp.png";
-//import { PieChart } from "@mui/x-charts";
 import { PieChart } from '@mui/x-charts/PieChart';
 import { useEffect, useState } from "react";
 import "animate.css";
 import axios from "axios";
+import {Cloudinary} from "@cloudinary/url-gen";
+import {AdvancedImage} from "@cloudinary/react";
+import {fill} from "@cloudinary/url-gen/actions/resize"; 
 
 const apiUrl = "https://inbiz.onrender.com";
 //const apiUrl = "http://localhost:3000";
+
+const cld = new Cloudinary({
+  cloud: {
+    cloudName: 'dxdn0myge'
+  }
+});
 
 function refreshPage()
 {
@@ -210,12 +212,16 @@ function ProductModal(props) {
 }
 
 function ProductCard(props) {
+
+  const myImage = cld.image(props.img);
+  myImage.resize(fill().width(250).height(250));
+
   return (
     <div
       className="flex flex-col h-fit w-[20%] m-[20px] ml-[0px] rounded-2xl cursor-pointer shadow-[10px_10px_15px_-3px_rgba(0,0,0,0.1)] bg-[#FFFFFF]"
       onClick={() => props.clickEvent(props.id)}
     >
-      <img src={props.img} className="size-full rounded-t-xl" alt="image"/>
+      <AdvancedImage cldImg={myImage} />
       <div className="flex flex-col p-5">
       <h1 className="text-2xl font-semibold my-[5px]">{props.name}</h1>
       <h1 className="font-light mb-[5px]">{props.brand}</h1>
