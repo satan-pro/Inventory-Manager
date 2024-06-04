@@ -39,7 +39,7 @@ router.get("/", function (req, res) {
   });
   
 
-  router.post("/", upload.single("image"), function (req, res) {
+  router.post("/upload", upload.single("image"), function (req, res) {
     const uploadedFile = req.file;
     const prodData = req.body;
     var imgName = "bhen ka loda";
@@ -90,9 +90,10 @@ router.get("/", function (req, res) {
     addProduct(imgUrl)
       .then((dbRes) => {
         console.log(dbRes);
-        res.redirect("http://localhost:5173/home/products");
+        res.redirect("https://inbiz.vercel.app/home/products");
       })
       .catch((err) => {
+        console.log(err);
         res.send(err);
       });
   }
