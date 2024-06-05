@@ -39,33 +39,13 @@ router.get("/", function (req, res) {
   });
   
 
-  router.post("/upload", upload.single("image"), function (req, res) {
+  router.post("/upload", upload.single("image"), async (req, res)=> {
+    try{
     const uploadedFile = req.file;
     const prodData = req.body;
-    var imgName = "bhen ka loda";
 
-    async function uploadCloudinary(){
-    return new Promise((resolve, reject)=>{
-    cloudinary.uploader.upload(uploadedFile.path,
-      {public_id: uploadedFile.filename},
-      function(error, result)
-      {
-        if(error)
-          {
-            reject(error);
-          }
-          else{
-            console.log(result);
-            resolve(result.secure_url);
-          }
-        });
-      });
-    }
-
-    //console.log(prodData);
-    console.log(imgName);
+    const imgUrl = await uploadCloudinary(uploadedFile.path, uploadedFile.filename);
   
-    async function addProduct(imgUrl) {
       const binds = [
         prodData.pid,
         prodData.supplier_id,
@@ -81,10 +61,33 @@ router.get("/", function (req, res) {
   
       const result = await connection.execute(sql, binds);
       connection.config.autoCommit=true;
-      return result;
+      
+      if(result.affectedRows>0)
+        {
+          res.redirect("https://inbiz.vercel.app/home/products");
+        }
     }
+    catch(err)
+    {
+      console.log(err);
+      res.status(500).send({message: "Error uploading product"});
+    }
+  });
+
+  async function uploadCloudinary(filePath, fileName)
+  {
+    try{
+      const result = await cloudinary.uploader.upload(filePath,
+        {public_id: fileName});
+        return result.secure_url;
+    }
+    catch(err)
+    {
+      throw new Error(`Error uploading to Cloudinary : ${err.message}`);
+    }
+  }
   
-   async function upload(){
+/*    async function upload(){
     let imgUrl = await uploadCloudinary();
       
     addProduct(imgUrl)
@@ -97,9 +100,8 @@ router.get("/", function (req, res) {
         res.send(err);
       });
   }
+ */
 
-  upload();
-});
   
   router.post("/update/:pid", function (req, res) {
     const pid = req.params.pid;
