@@ -59,7 +59,7 @@ router.get("/", function (req, res) {
   
       const sql = `insert into products values(?,?,?,?,?,?,?,?)`;
   
-      const result = await connection.execute(sql, binds);
+      const [result] = await connection.execute(sql, binds);
       connection.config.autoCommit=true;
       
       if(result.affectedRows>0)
