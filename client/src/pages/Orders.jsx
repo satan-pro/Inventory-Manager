@@ -355,13 +355,13 @@ function Body() {
 
 export default function Orders() {
 
-  useEffect(()=>{
+  /*useEffect(()=>{
     axios.get(`${apiUrl}/auth/authUser/admin`).then((response)=>{
       if(!response.data.valid)
       {
         window.location='/login';
       }
     })
-  })
+  })*/
   return <Body />;
 }
