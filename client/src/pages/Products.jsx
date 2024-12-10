@@ -12,8 +12,8 @@ import { useEffect, useState } from "react";
 import "animate.css";
 import axios from "axios";
 
-const apiUrl = "https://inbiz.onrender.com";
-//const apiUrl = "http://localhost:3000";
+//const apiUrl = "https://inbiz.onrender.com";
+const apiUrl = "http://localhost:3000";
 
 function refreshPage()
 {
@@ -400,14 +400,5 @@ function Body() {
 }
 
 export default function Products() {
-
-  useEffect(()=>{
-    axios.get(`${apiUrl}/auth/authUser/admin`).then((response)=>{
-      if(!response.data.valid)
-      {
-        window.location='/login';
-      }
-    })
-  })
   return <Body />;
 }

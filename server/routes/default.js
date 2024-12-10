@@ -148,11 +148,6 @@ function generateRandom() {
 
   router.post("/cart", function(req, res){
 
-    if(sessionID==='')
-    {
-      res.json({success:false});
-    }
-  
     const cartData = req.body.cartData;
     let fullName = cartData.fname+" "+cartData.lName;
     let address = cartData.address1+", "+cartData.address2+", "+cartData.pincode;

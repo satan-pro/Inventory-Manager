@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import googleIcon from "../assets/icons8-google-48.png";
 
-const apiUrl = "https://inbiz.onrender.com";
-//const apiUrl = "http://localhost:3000";
+//const apiUrl = "https://inbiz.onrender.com";
+const apiUrl = "http://localhost:3000";
 
 export default function Login(props) {
   const [loginBtn, setLoginBtn] = useState(true);
   const [regBtn, setRegBtn] = useState(false);
 
-  useEffect(()=>{
-    handleType()
-  },[]);
+  useEffect(() => {
+    handleType();
+  }, []);
 
   function handleType() {
     if (props.type === "login") {
@@ -22,43 +23,55 @@ export default function Login(props) {
     }
   }
 
-  const handleLogin = (event)=>{
+  const handleLogin = (event) => {
     event.preventDefault();
 
     const formData = new FormData(event.target);
     const formObject = Object.fromEntries(formData.entries());
 
-    axios.post(`${apiUrl}/auth/login`,{
-        authData:formObject
-    }).then((response)=>{
-        response.data.success?response.data.type==='customer'?window.location='/':window.location='/home/orders':window.location.reload();
-    }).catch((err)=>{
+    axios
+      .post(`${apiUrl}/auth/login`, {
+        authData: formObject,
+      })
+      .then((response) => {
+        response.data.success
+          ? response.data.type === "customer"
+            ? (window.location = "/")
+            : (window.location = "/home/orders")
+          : window.location.reload();
+      })
+      .catch((err) => {
         console.log(err);
-    });
-  }
+      });
+  };
 
-  const handleRegister = (event)=>{
+  const handleRegister = (event) => {
     event.preventDefault();
 
     const formData = new FormData(event.target);
     const formObject = Object.fromEntries(formData.entries());
 
-    axios.post(`${apiUrl}/auth/register`,{
-        authData:formObject
-    }).then((response)=>{
-        response.data.success?window.location='/login':window.location.reload();
-    }).catch((err)=>{
+    axios
+      .post(`${apiUrl}/auth/register`, {
+        authData: formObject,
+      })
+      .then((response) => {
+        response.data.success
+          ? (window.location = "/login")
+          : window.location.reload();
+      })
+      .catch((err) => {
         console.log(err);
-    });
-  }
+      });
+  };
 
   return (
-    <div className="flex w-screen h-screen">
-      <div className="w-[50%] flex flex-col bg-[#F4F6FA] pt-[50px]">
+    <div className="flex w-screen min-h-screen overflow-y-auto">
+      <div className="w-[50%] min-h-screen flex flex-col bg-[#F4F6FA] pt-[50px]">
         <h1 className="text-8xl text-right text-[#5B83D7] pr-[10px]">In</h1>
       </div>
-      <div className="w-[50%] flex flex-col bg-[#5B83D7] pt-[50px]">
-        <h1 className="text-8xl text-left text-white pl-[10px] mb-[40px]">
+      <div className="w-[50%] min-h-screen flex flex-col bg-[#5B83D7] pt-[50px] py-[20px]">
+        <h1 className="text-8xl text-left text-white pl-[10px] mb-[10px]">
           Biz
         </h1>
         <div className="w-full flex flex-col items-center">
@@ -89,6 +102,11 @@ export default function Login(props) {
                 }}
               >
                 Register
+              </button>
+              <button className="w-fit p-2.5 rounded-md bg-[#F4F6FA] flex flex-row gap-[5px]">
+              <a href={apiUrl+"/auth/google"}>
+                <img src={googleIcon} className="w-[30px]"></img>
+              </a>
               </button>
             </div>
             <form
@@ -127,12 +145,21 @@ export default function Login(props) {
                 />
               </div>
               <div className="mb-4">
-                        <label htmlFor="userType" className="block text-gray-700 text-xl font-medium mb-2">User Type</label>
-                        <select id="userType" name="userType" className="bg-transparent border-b-2 rounded-md px-4 py-2 w-full focus:outline-none focus:ring">
-                            <option value="customer">Customer</option>
-                            <option value="admin">Admin</option>
-                        </select>
-                    </div>
+                <label
+                  htmlFor="userType"
+                  className="block text-gray-700 text-xl font-medium mb-2"
+                >
+                  User Type
+                </label>
+                <select
+                  id="userType"
+                  name="userType"
+                  className="bg-transparent border-b-2 rounded-md px-4 py-2 w-full focus:outline-none focus:ring"
+                >
+                  <option value="customer">Customer</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
               <button
                 type="submit"
                 className="bg-[#5B83D7] text-white rounded-md px-4 py-2 w-full font-medium"
@@ -192,12 +219,21 @@ export default function Login(props) {
                 />
               </div>
               <div className="mb-4">
-                        <label htmlFor="userType" className="block text-gray-700 text-xl font-medium mb-2">User Type</label>
-                        <select id="userType" name="userType" className="bg-transparent border-b-2 rounded-md px-4 py-2 w-full focus:outline-none focus:ring">
-                            <option value="customer">Customer</option>
-                            <option value="admin">Admin</option>
-                        </select>
-                    </div>
+                <label
+                  htmlFor="userType"
+                  className="block text-gray-700 text-xl font-medium mb-2"
+                >
+                  User Type
+                </label>
+                <select
+                  id="userType"
+                  name="userType"
+                  className="bg-transparent border-b-2 rounded-md px-4 py-2 w-full focus:outline-none focus:ring"
+                >
+                  <option value="customer">Customer</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
               <button
                 type="submit"
                 className="bg-[#5B83D7] text-white rounded-md px-4 py-2 w-full font-medium"

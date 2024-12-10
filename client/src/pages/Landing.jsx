@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { CartContext } from "../store/shopping-cart-context";
 import Navbar from "../components/Navbar";
 import Snackbar from "@mui/material/Snackbar";
 import axios from "axios";
 
-const apiUrl = "https://inbiz.onrender.com";
-//const apiUrl = "http://localhost:3000";
+//const apiUrl = "https://inbiz.onrender.com";
+const apiUrl = "http://localhost:3000";
 
 function Query(props) {
   const [categories, setCategories] = useState([]);
@@ -72,10 +73,12 @@ function Filters() {
   );
 }
 
-function ProductCard(props) {
+function ProductCard({ key, item }) {
   const [btnClick, setBtnClick] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMsg, setSnackbarMsg] = useState("");
+
+  const cartCtx = useContext(CartContext);
 
   function closeSnackbar() {
     setOpenSnackbar(false);
@@ -83,26 +86,21 @@ function ProductCard(props) {
 
   function handleClick(){
     console.log('clciked');
-    axios.get(`${apiUrl}/cart/${props.item["product_id"]}`).then((response)=>{
-      console.log(response);
-    })
-    .catch((err)=>{
-      console.log(err);
-    })
+    cartCtx.addItemsToCart({...item, quantity:1});
   }
 
   return (
     <div className="flex flex-col w-[30%] h-fit">
-      <img src={props.item["product_img"]} className="size-full" />
+      <img src={item["product_img"]} className="size-full" />
       <div className="flex py-5 justify-between">
         <div className="flex flex-col">
-          <h1 className="text-xl font-medium">{props.item["product_name"]}</h1>
-          <h1 className="text-base font-light">{props.item["brand"]}</h1>
+          <h1 className="text-xl font-medium">{item["product_name"]}</h1>
+          <h1 className="text-base font-light">{item["brand"]}</h1>
         </div>
         <div className="flex flex-col items-end">
-          <h1 className="text-2xl font-medium">₹{props.item["cost_price"]}</h1>
+          <h1 className="text-2xl font-medium">₹{item["cost_price"]}</h1>
           <h1 className="text-sm font-base text-blue-400">
-            {props.item["quantity"]} left
+            {item["quantity"]} left
           </h1>
         </div>
       </div>
@@ -114,8 +112,9 @@ function ProductCard(props) {
           handleClick();
           setBtnClick(true);
           setOpenSnackbar(true);
-          setSnackbarMsg(`${props.item["product_name"]} added to cart`);
+          setSnackbarMsg(`${item["product_name"]} added to cart`);
         }}
+        disabled={btnClick}
       >
         {btnClick ? "Added" : "Add to Cart"}
       </button>
@@ -129,17 +128,8 @@ function ProductCard(props) {
   );
 }
 
-function ProductDisplay(props) {
+function ProductDisplay() {
   const [products, getProducts] = useState([]);
-  const [tempCart, setTempCart] = useState([]);
-
-  function cartUpdate(item)
-  {
-    setTempCart((prev)=>{
-      return [...prev,item];
-    });
-    props.addToCart(tempCart);
-  }
 
   useEffect(() => {
     axios.get(`${apiUrl}/products`).then((response) => {
@@ -150,27 +140,19 @@ function ProductDisplay(props) {
   return (
     <div className="flex flex-wrap p-5 w-[70%] gap-[30px]">
       {products && products.map((product, index) => {
-        return <ProductCard key={index} item={product} addItem={(item)=>cartUpdate(item)}/>;
+        return <ProductCard key={index} item={product}/>;
       })}
     </div>
   );
 }
 
 export default function Landing() {
-  const [cart, setCart] = useState([]);
-  function cartUpdate(temp)
-  {
-    setCart((prev)=>{
-      return [...prev,temp];
-    });
-    console.log(cart);
-  }
   return (
     <div className="w-screen h-screen flex flex-col overflow-scroll relative bg-[#F4F6FA]">
       <Navbar />
       <div className="flex p-5 px-[100px] pt-[100px] gap-[10%]">
         <Filters />
-        <ProductDisplay addToCart={(tempCart)=>cartUpdate(tempCart)}/>
+        <ProductDisplay/>
       </div>
     </div>
   );

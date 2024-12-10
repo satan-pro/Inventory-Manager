@@ -15,8 +15,8 @@ import "animate.css";
 
 //const apiUrl = process.env.REACT_APP_API_URL;
 
-const apiUrl = "https://inbiz.onrender.com";
-//const apiUrl = "http://localhost:3000";
+//const apiUrl = "https://inbiz.onrender.com";
+const apiUrl = "http://localhost:3000";
 
 function Heading() {
   return (

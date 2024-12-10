@@ -64,7 +64,7 @@ router.get("/", function (req, res) {
       
       if(result.affectedRows>0)
         {
-          res.redirect("https://inbiz.vercel.app/home/products");
+          res.redirect("https://localhost:5173/home/products");
         }
     }
     catch(err)
